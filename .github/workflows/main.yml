@@ -7,22 +7,9 @@ on:
   workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
-  setup-dind:
-    name: Setup Docker in Docker
-    runs-on: ubuntu-latest
-    services:
-      docker:
-        image: docker:dind
-        options: --tls=false
-    env:
-      DOCKER_HOST: tcp://docker:2375
-      DOCKER_TLS_CERTDIR: ""
-      DOCKER_DRIVER: overlay2
-
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: setup-dind
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK
@@ -36,7 +23,6 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    needs: build
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK
@@ -60,7 +46,6 @@ jobs:
   package:
     name: Package
     runs-on: ubuntu-latest
-    needs: test
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK
@@ -79,7 +64,6 @@ jobs:
   generate-pdf:
     name: Generate PDF
     runs-on: ubuntu-latest
-    needs: package
     if: github.event_name == 'workflow_dispatch' # Manual trigger
     steps:
       - name: Set up Environment
@@ -106,7 +90,6 @@ jobs:
   pages:
     name: Publish Pages
     runs-on: ubuntu-latest
-    needs: package
     if: github.event_name == 'workflow_dispatch' # Manual trigger
     steps:
       - uses: actions/checkout@v3
