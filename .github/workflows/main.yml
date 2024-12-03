@@ -103,7 +103,6 @@ jobs:
           mvn javadoc:javadoc
           cp -rf target/site/apidocs/* page/
           cp -rf target/jacoco/* page/
-          cp -rf page/index.html page/
       - name: Publish to Pages
         uses: actions/upload-pages-artifact@v2
         with:
