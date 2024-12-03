@@ -33,11 +33,22 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Upload artifact
+      - name: Generate testresults and javadoc
+        run: |
+          mvn clean package
+          mvn javadoc:javadoc
+      - name: Upload index.html
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: 'page/'
+          path: 'page/index.html'
+      - name: Upload test coverage
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'target/jacoco/'
+      - name: Upload javadoc
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'target/site/apidocs/'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
