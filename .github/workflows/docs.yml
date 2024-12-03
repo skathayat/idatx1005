@@ -39,7 +39,7 @@ jobs:
         run: |
           mvn clean package
           mvn javadoc:javadoc
-          cp -rf target/site/apidocs/* page/
+          cp -rf target/site/* page/
           cp -rf target/jacoco/* page/
       - name: Setup Pages
         uses: actions/configure-pages@v5
