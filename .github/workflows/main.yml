@@ -101,7 +101,7 @@ jobs:
         run: |
           mvn clean package
           mvn javadoc:javadoc
-          cp -rf target/site/apidocs/* page/apidocs/
+          cp -rf target/site/apidocs/* page/
           cp -rf target/jacoco/* page/
           cp -rf page/index.html page/
       - name: Publish to Pages
