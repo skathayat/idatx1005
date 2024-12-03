@@ -90,7 +90,6 @@ jobs:
   pages:
     name: Publish Pages
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' # Manual trigger
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK
@@ -102,7 +101,10 @@ jobs:
         run: |
           mvn clean package
           mvn javadoc:javadoc
+          cp -rf target/site/apidocs/* page/apidocs/
+          cp -rf target/jacoco/* page/
+          cp -rf page/index.html page/
       - name: Publish to Pages
         uses: actions/upload-pages-artifact@v2
         with:
-          path: public
+          path: page
