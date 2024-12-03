@@ -29,26 +29,24 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Generate testresults and javadoc
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Generate Javadoc
         run: |
           mvn clean package
           mvn javadoc:javadoc
+          cp -rf target/site/apidocs/* page/
+          cp -rf target/jacoco/* page/
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
       - name: Upload index.html
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'page/index.html'
-      - name: Upload test coverage
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: 'target/jacoco/'
-      - name: Upload javadoc
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: 'target/site/apidocs/'
+          path: 'page/'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
