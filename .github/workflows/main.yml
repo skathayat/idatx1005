@@ -12,6 +12,11 @@ permissions:
   pages: write
   id-token: write
 
+# Allow only one concurrent deployment, and do NOT cancel in-progress runs
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   build:
     name: Build
