@@ -1,4 +1,4 @@
-package no.ntnu.idatt1002.demo.dao;
+package no.ntnu.idatx1005.demo.dao;
 
 
 import java.sql.*;

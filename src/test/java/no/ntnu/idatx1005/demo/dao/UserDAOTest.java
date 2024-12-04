@@ -1,16 +1,5 @@
-package no.ntnu.idatt1002.demo.dao;
+package no.ntnu.idatx1005.demo.dao;
 
-import no.ntnu.idatt1002.demo.data.User;
-import org.junit.jupiter.api.*;
-import org.testcontainers.containers.MySQLContainer;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 public class UserDAOTest {
 
     /*

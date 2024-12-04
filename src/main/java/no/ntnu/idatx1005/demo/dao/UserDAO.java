@@ -1,12 +1,12 @@
-package no.ntnu.idatt1002.demo.dao;
+package no.ntnu.idatx1005.demo.dao;
 
-import no.ntnu.idatt1002.demo.data.User;
+import no.ntnu.idatx1005.demo.data.User;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.ntnu.idatt1002.demo.dao.DBConnectionProvider.close;
+import static no.ntnu.idatx1005.demo.dao.DBConnectionProvider.close;
 
 
 /**

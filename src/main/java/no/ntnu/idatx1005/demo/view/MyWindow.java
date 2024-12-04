@@ -1,8 +1,8 @@
-package no.ntnu.idatt1002.demo.view;
+package no.ntnu.idatx1005.demo.view;
 
-import no.ntnu.idatt1002.demo.dao.DBConnectionProvider;
-import no.ntnu.idatt1002.demo.dao.UserDAO;
-import no.ntnu.idatt1002.demo.data.User;
+import no.ntnu.idatx1005.demo.dao.DBConnectionProvider;
+import no.ntnu.idatx1005.demo.dao.UserDAO;
+import no.ntnu.idatx1005.demo.data.User;
 
 import java.awt.*;
 import javax.swing.*;

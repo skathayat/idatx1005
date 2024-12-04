@@ -1,6 +1,6 @@
-package no.ntnu.idatt1002.demo.repo;
+package no.ntnu.idatx1005.demo.repo;
 
-import no.ntnu.idatt1002.demo.data.MyEntity;
+import no.ntnu.idatx1005.demo.data.MyEntity;
 
 import java.util.Arrays;
 import java.util.List;
