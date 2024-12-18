@@ -6,17 +6,6 @@ on:
       - main
   workflow_dispatch: # Allows manual triggering of the workflow
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow only one concurrent deployment, and do NOT cancel in-progress runs
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
   build:
     name: Build
@@ -72,11 +61,36 @@ jobs:
           name: packaged-app
           path: target/idatt2002demo-1.0-SNAPSHOT-jar-with-dependencies.jar
 
-  deployPages:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  generate-pdf:
+    name: Generate PDF
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' # Manual trigger
+    steps:
+      - name: Set up Environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget fontconfig libfreetype6 libjpeg-turbo8 libpng16-16 libx11-6 libxcb1 libxext6 libxrender1 xfonts-75dpi xfonts-base
+          wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
+          sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb
+          sudo apt-get install -y nodejs npm git
+          npm install -g github-wikito-converter
+      - name: Clone Wiki
+        run: |
+          git clone https://github.com/${{ github.repository }}.wiki.git
+          cd ${{ github.repository }}.wiki
+          gwtc ${{ github.repository }}
+      - name: Convert to PDF
+        run: wkhtmltopdf documentation.html wiki.pdf
+      - name: Upload PDF
+        uses: actions/upload-artifact@v3
+        with:
+          name: wiki-pdf
+          path: wiki.pdf
+
+  pages:
+    name: Publish Pages
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' # Manual trigger
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK
@@ -88,15 +102,7 @@ jobs:
         run: |
           mvn clean package
           mvn javadoc:javadoc
-          cp -rf target/site/* page/
-          cp -rf target/jacoco/* page/
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload index.html
-        uses: actions/upload-pages-artifact@v3
+      - name: Publish to Pages
+        uses: actions/upload-pages-artifact@v2
         with:
-          path: 'page/'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-
+          path: public
