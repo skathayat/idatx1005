@@ -70,7 +70,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: packaged-app
-          path: target/idatt2002demo-1.0-SNAPSHOT-jar-with-dependencies.jar
+          path: target/idatx1005demo-1.0-SNAPSHOT-jar-with-dependencies.jar
 
   deployPages:
     environment:
