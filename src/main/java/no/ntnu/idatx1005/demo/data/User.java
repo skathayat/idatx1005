@@ -1,29 +1,29 @@
 package no.ntnu.idatx1005.demo.data;
 
 
+import java.util.UUID;
+
 /**
  * Class for the User object as saved in database
  */
 public class User {
-    private int userId;
+    private UUID userId;
     private String username;
     private String password;
-    private byte[] salt;
 
     public User(){}
 
-    public User(int userId, String username, String password, byte[] salt){
+    public User(UUID userId, String username, String password){
         this.userId = userId;
         this.username = username;
         this.password = password;
-        this.salt = salt;
     }
 
-    public int getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 
@@ -41,13 +41,5 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public byte[] getSalt() {
-        return salt;
-    }
-
-    public void setSalt(byte[] salt) {
-        this.salt = salt;
     }
 }

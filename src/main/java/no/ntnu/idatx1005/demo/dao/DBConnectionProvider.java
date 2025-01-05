@@ -4,32 +4,18 @@ package no.ntnu.idatx1005.demo.dao;
 import java.sql.*;
 
 public class DBConnectionProvider {
-
-    private final String url;
-    private final String username;
-    private final String password;
-
     private static DBConnectionProvider databaseConnectionProvider;
-
-    private static final String IP_TO_DB_SERVER = "127.0.0.1";
-    private static String DB_NAME = "myDB";
-    private static final String DB_USE_SSL = "?useSSL=false";
+    private static String DB_NAME = "db";
+    private static String DATABASE_URL = "jdbc:sqlite::resource:" + DB_NAME;
 
     public DBConnectionProvider() {
-        this.url = "jdbc:mysql://" + IP_TO_DB_SERVER + ":3307/" + DB_NAME + DB_USE_SSL;
-        this.username = "root";
-        this.password = "example";
-    }
-
-    public DBConnectionProvider(String url, String username, String password) {
-        this.url = url;
-        this.username = username;
-        this.password = password;
     }
 
     Connection getConnection() {
         try {
-            return DriverManager.getConnection(url, username, password);
+            // Note: In a real application, you should not connect to the database like this. Instead, you should use a connection pool.
+            // In addition, database should be protected
+            return DriverManager.getConnection(DATABASE_URL);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -72,6 +58,45 @@ public class DBConnectionProvider {
                 e.printStackTrace();
             }
         }
+    }
 
+    /**
+     * Method that creates a database if it does not exist.
+     * Note that you should not use this method in production code. Instead, you should create the database tables via SQL scripts.
+     * The method creates tables for User.
+     *
+     * @throws SQLException if creating the database fails
+     */
+    public static void createDB() throws SQLException {
+
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
+
+            // Sql-statements for creating tables
+            // NOTE: Passwords should never be stored in plain text in a real/production application. They should be hashed and salted.
+            String createUserTable =
+                    "CREATE TABLE IF NOT EXISTS Users (" +
+                            "userId uuid primary key, " +
+                            "username VARCHAR(255), " +
+                            "password VARCHAR(255)" +
+                            ");";
+            executeStatement(connection, createUserTable);
+        } catch (SQLException e) {
+            throw new SQLException("Error creating tables: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Method that executes a sql statement.
+     *
+     * @param connection connection to the database
+     * @param sql the sql statement to execute
+     * @throws SQLException if executing the statement fails
+     */
+    private static void executeStatement(Connection connection, String sql) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Error executing statement: " + e.getMessage(), e);
+        }
     }
 }

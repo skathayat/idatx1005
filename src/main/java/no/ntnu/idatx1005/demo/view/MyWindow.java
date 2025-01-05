@@ -5,6 +5,8 @@ import no.ntnu.idatx1005.demo.dao.UserDAO;
 import no.ntnu.idatx1005.demo.data.User;
 
 import java.awt.*;
+import java.util.Random;
+import java.util.UUID;
 import javax.swing.*;
 
 /**
@@ -23,15 +25,24 @@ public class MyWindow extends JFrame {
     public MyWindow(String title) {
         super(title);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(1, 1, 1, 1));
+        setLayout(new GridLayout(10, 10, 1, 1));
 
-        // get list of users from database and add them to the window
+
+        // This piece of code is just for testing the database connection
+        // First we create a user and add it to the database
+        // Then we get all users from the database and print them to the window
+        /*
         UserDAO userDao = new UserDAO(DBConnectionProvider.instance());
+        userDao.addUser(new User(UUID.randomUUID(), "user " + new Random().nextInt(1000), "1234"));
         java.util.List<User> users = userDao.getUsers();
         for (User user : users) {
             add(new JLabel(user.getUsername()));
         }
+        */
 
+
+        setPreferredSize(new Dimension(400, 300));
+        setLocationRelativeTo(null);
         pack();
     }
 }
