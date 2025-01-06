@@ -41,6 +41,7 @@ public class MyWindow extends JFrame {
         */
 
 
+
         setPreferredSize(new Dimension(400, 300));
         setLocationRelativeTo(null);
         pack();
