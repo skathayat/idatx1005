@@ -1,43 +1,36 @@
 package no.ntnu.idatx1005.demo.dao;
 
-import no.ntnu.idatx1005.demo.data.User;
-
 import java.sql.*;
-import java.util.UUID;
 
 public class DatabaseTest {
-    public static void main(String[] args) throws SQLException {
-        String jdbcURL = "jdbc:sqlite::resource:testdb";
+    public static void main(String[] args) throws ClassNotFoundException {
+        try {
+            String jdbcUrl = "jdbc:postgresql://localhost:5432/idatt1005-db";
+            String username = "idatt1005user";
+            String password = "idatt1005password";
 
-        Connection connection = DriverManager.getConnection(jdbcURL);
+            // Register DB driver
+            Class.forName("org.postgresql.Driver");
 
-        System.out.println("Connected to database.");
+            // Connect to the DB
+            Connection connection = null;
+            connection = DriverManager.getConnection(jdbcUrl, username, password);
 
-        String sql = "CREATE TABLE IF NOT EXISTS Users (" +
-                "userId uuid primary key, " +
-                "username VARCHAR(255), " +
-                "password VARCHAR(255)" +
-                ");";
-                //"Create table IF NOT EXISTS user (ID int primary key, name varchar(50))";
+            // Perform DB operations
+            Statement statement = connection.createStatement();
+            String sqlQuery = "SELECT * FROM userinfo";
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            while (resultSet.next())
+            {
+                System.out.println("ID:" + resultSet.getString("userId"));
+                System.out.println("username:" + resultSet.getString("username"));
+                System.out.println("password:" + resultSet.getString("password"));
+            }
 
-        Statement statement = connection.createStatement();
-
-        statement.execute(sql);
-
-        System.out.println("Created table students.");
-
-        User user = new User(UUID.randomUUID(), "Nam Ha Minh", "fafafa");
-
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Users (userId, username, password) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-        preparedStatement.setObject(1, user.getUserId(), Types.OTHER);
-        preparedStatement.setString(2, user.getUsername());
-        preparedStatement.setString(3, user.getPassword());
-        int rows = preparedStatement.executeUpdate();
-
-        if (rows > 0) {
-            System.out.println("Inserted a new row.");
+            // Close the connection
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-
-        connection.close();
     }
 }

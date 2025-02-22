@@ -3,27 +3,29 @@ package no.ntnu.idatx1005.demo.dao;
 
 import java.sql.*;
 
-public class DBConnectionProvider {
-    private static DBConnectionProvider databaseConnectionProvider;
-    private static String DB_NAME = "db";
-    private static String DATABASE_URL = "jdbc:sqlite::resource:" + DB_NAME;
+public class PostgresDBConnectionProvider {
+    private static PostgresDBConnectionProvider databaseConnectionProvider;
+    private static String DB_NAME = "idatt1005-db";
+    private static String DATABASE_URL = "jdbc:postgresql://localhost:5432/" + DB_NAME;
+    private static String username = "idatt1005user";
+    private static String password = "idatt1005password";
 
-    public DBConnectionProvider() {
+    public PostgresDBConnectionProvider() {
     }
 
     Connection getConnection() {
         try {
             // Note: In a real application, you should not connect to the database like this. Instead, you should use a connection pool.
             // In addition, database should be protected
-            return DriverManager.getConnection(DATABASE_URL);
+            return DriverManager.getConnection(DATABASE_URL, username, password);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static DBConnectionProvider instance() {
+    public static PostgresDBConnectionProvider instance() {
         if (databaseConnectionProvider == null) {
-            databaseConnectionProvider = new DBConnectionProvider();
+            databaseConnectionProvider = new PostgresDBConnectionProvider();
             return databaseConnectionProvider;
         } else {
             return databaseConnectionProvider;
@@ -99,4 +101,5 @@ public class DBConnectionProvider {
             throw new SQLException("Error executing statement: " + e.getMessage(), e);
         }
     }
+
 }

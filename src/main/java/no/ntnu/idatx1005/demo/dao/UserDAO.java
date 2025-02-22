@@ -7,16 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static no.ntnu.idatx1005.demo.dao.DBConnectionProvider.close;
-
-
 /**
  * Data access object for User
  */
 public class UserDAO {
-    private DBConnectionProvider connectionProvider;
+    private PostgresDBConnectionProvider connectionProvider;
 
-    public UserDAO(DBConnectionProvider connectionProvider) {
+    public UserDAO(PostgresDBConnectionProvider connectionProvider) {
         this.connectionProvider = connectionProvider;
     }
 
@@ -32,7 +29,7 @@ public class UserDAO {
         ResultSet resultSet = null;
         try {
             connection = connectionProvider.getConnection();
-            preparedStatement = connection.prepareStatement("SELECT * FROM Users");
+            preparedStatement = connection.prepareStatement("SELECT * FROM userinfo");
             resultSet = preparedStatement.executeQuery();
 
             User user;
@@ -45,32 +42,9 @@ public class UserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            close(connection, preparedStatement, resultSet);
+            PostgresDBConnectionProvider.close(connection, preparedStatement, resultSet);
         }
         return users;
-    }
-
-    /**
-     * Helping method to get a User from a ResultSet
-     *
-     * @param resultSet ResultSet with the user
-     * @return User object, or null if unsuccessful
-     */
-    private User getUserFromResultSet(ResultSet resultSet) {
-        User user = null;
-        try {
-            if (resultSet.next()) {
-                user = new User();
-                user.setUserId(UUID.fromString(resultSet.getString("userId")));
-                user.setUsername(resultSet.getString("username"));
-                user.setPassword(resultSet.getString("password"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            close(null, null, resultSet);
-        }
-        return user;
     }
 
     /**
@@ -84,13 +58,17 @@ public class UserDAO {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
-        //User userFromDb = getUserByUsername(user.getUsername());
+        // check if user already exists in database
+        User existingUser = getUsers().stream().allMatch(u -> u.getUsername().equals(user.getUsername())) ? user : null;
+        if(existingUser != null) {
+            System.out.println("User already exists");
+            return existingUser;
+        }
 
-        //Note: for simplicity in this example, we do not check if the user already exists. In a real application, you should check if the user already exists
         try {
             connection = connectionProvider.getConnection();
             User newUser = new User();
-            preparedStatement = connection.prepareStatement("INSERT INTO Users (userId, username, password) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            preparedStatement = connection.prepareStatement("INSERT INTO userinfo (userId, username, password) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setObject(1, user.getUserId(), Types.OTHER);
             preparedStatement.setString(2, user.getUsername());
             preparedStatement.setString(3, user.getPassword());
@@ -105,7 +83,7 @@ public class UserDAO {
             e.printStackTrace();
 
         } finally {
-            close(connection, preparedStatement, resultSet);
+            PostgresDBConnectionProvider.close(connection, preparedStatement, resultSet);
         }
 
         return new User();

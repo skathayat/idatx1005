@@ -1,0 +1,18 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:15.1
+    restart: always
+    environment:
+      POSTGRES_DB: idatt1005-db
+      POSTGRES_USER: idatt1005user
+      POSTGRES_PASSWORD: idatt1005password
+    ports:
+      - 5432:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+
+volumes:
+  data1-1:
+  db: { }
