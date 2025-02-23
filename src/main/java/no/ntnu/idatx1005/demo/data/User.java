@@ -7,24 +7,24 @@ import java.util.UUID;
  * Class for the User object as saved in database
  */
 public class User {
-    private UUID userId;
+    private UUID userid;
     private String username;
     private String password;
 
     public User(){}
 
     public User(UUID userId, String username, String password){
-        this.userId = userId;
+        this.userid = userId;
         this.username = username;
         this.password = password;
     }
 
-    public UUID getUserId() {
-        return userId;
+    public UUID getUserid() {
+        return userid;
     }
 
-    public void setUserId(UUID userId) {
-        this.userId = userId;
+    public void setUserid(UUID userid) {
+        this.userid = userid;
     }
 
     public String getUsername() {

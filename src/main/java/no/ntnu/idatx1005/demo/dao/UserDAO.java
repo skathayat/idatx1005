@@ -35,7 +35,7 @@ public class UserDAO {
             User user;
             while (resultSet.next()) {
                 user = new User();
-                user.setUserId(UUID.fromString(resultSet.getString("userId")));
+                user.setUserid(UUID.fromString(resultSet.getString("userId")));
                 user.setUsername(resultSet.getString("username"));
                 users.add(user);
             }
@@ -69,14 +69,14 @@ public class UserDAO {
             connection = connectionProvider.getConnection();
             User newUser = new User();
             preparedStatement = connection.prepareStatement("INSERT INTO userinfo (userId, username, password) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setObject(1, user.getUserId(), Types.OTHER);
+            preparedStatement.setObject(1, user.getUserid(), Types.OTHER);
             preparedStatement.setString(2, user.getUsername());
             preparedStatement.setString(3, user.getPassword());
             int result = preparedStatement.executeUpdate();
 
             if (result == 1) {
                 newUser.setUsername(user.getUsername());
-                newUser.setUserId(user.getUserId());
+                newUser.setUserid(user.getUserid());
                 return newUser;
             }
         } catch (SQLException e) {
